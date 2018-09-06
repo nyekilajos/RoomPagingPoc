@@ -2,7 +2,7 @@ package com.epam.nyekilajos.roompagingpoc.model.network
 
 import com.google.gson.annotations.SerializedName
 
-data class Beer(
+data class BeerDTO(
 
         @SerializedName("id")
         val id: Int?,

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="beer"
+            type="com.epam.nyekilajos.roompagingpoc.model.database.Beer" />
+
+    </data>
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/row_height"
+        android:layout_marginLeft="@dimen/side_padding"
+        android:layout_marginRight="@dimen/side_padding"
+        android:gravity="center"
+        android:text="@{beer.name}"
+        tools:text="American Pale Ale" />
+
+</layout>

@@ -6,5 +6,7 @@ import retrofit2.http.GET
 interface BeerService {
 
     @GET("beers")
-    fun getBeers(): Call<List<Beer>>
+    fun getBeers(): Call<List<BeerDTO>>
 }
+
+class BeerServiceException(message: String) : RuntimeException(message)
