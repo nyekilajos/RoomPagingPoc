@@ -5,10 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.epam.nyekilajos.roompagingpoc.MainActivity
 import com.epam.nyekilajos.roompagingpoc.RoomPagingApplication
+import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
 import dagger.*
 import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 
@@ -21,6 +24,16 @@ abstract class ApplicationModule {
         @JvmStatic
         @Provides
         fun providesContext(application: RoomPagingApplication): Context = application.applicationContext
+
+        @JvmStatic
+        @Provides
+        fun providesBeerService(): BeerService {
+            return Retrofit.Builder()
+                    .baseUrl(BEERS_SERVICE_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(BeerService::class.java)
+        }
 
 //        @Singleton
 //        @JvmStatic
@@ -70,5 +83,7 @@ interface AppComponent : AndroidInjector<RoomPagingApplication> {
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
+
+private const val BEERS_SERVICE_BASE_URL = "https://api.punkapi.com/v2/"
 
 //private const val ADDRESS_ITEM_DATABASE_NAME = "addressItemDb"
