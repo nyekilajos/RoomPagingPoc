@@ -3,6 +3,7 @@ package com.epam.nyekilajos.roompagingpoc.util
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 @BindingAdapter("itemDecoration")
 fun setItemDecoration(recyclerView: RecyclerView, itemDecoration: RecyclerView.ItemDecoration) {
@@ -21,4 +22,16 @@ fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, adapter: ListAdapt
             (recyclerView.adapter as ListAdapter<T, *>?)?.submitList(data)
         }
     }
+}
+
+@BindingAdapter("onRefresh")
+fun setOnRefreshListener(swipeRefreshLayout: SwipeRefreshLayout, onRefresh: Runnable) {
+    swipeRefreshLayout.setOnRefreshListener {
+        onRefresh.run()
+    }
+}
+
+@BindingAdapter("refreshing")
+fun setRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean) {
+    swipeRefreshLayout.isRefreshing = refreshing
 }

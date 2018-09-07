@@ -3,17 +3,21 @@ package com.epam.nyekilajos.roompagingpoc.inject
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.epam.nyekilajos.roompagingpoc.ui.MainActivity
+import androidx.room.Room
 import com.epam.nyekilajos.roompagingpoc.RoomPagingApplication
+import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
+import com.epam.nyekilajos.roompagingpoc.ui.MainActivity
 import com.epam.nyekilajos.roompagingpoc.viewmodel.BeerListViewModel
 import dagger.*
 import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import dagger.multibindings.IntoMap
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 
@@ -32,9 +36,21 @@ abstract class ApplicationModule {
         fun providesBeerService(): BeerService {
             return Retrofit.Builder()
                     .baseUrl(BEERS_SERVICE_BASE_URL)
+                    .client(OkHttpClient.Builder()
+                            .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                            .writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
+                            .build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(BeerService::class.java)
+        }
+
+        @JvmStatic
+        @Provides
+        fun providesBeersDatabase(context: Context): BeersDatabase {
+            return Room
+                    .databaseBuilder(context, BeersDatabase::class.java, BEERS_DATABASE_NAME)
+                    .build()
         }
 
     }
@@ -79,3 +95,5 @@ interface AppComponent : AndroidInjector<RoomPagingApplication> {
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
 private const val BEERS_SERVICE_BASE_URL = "https://api.punkapi.com/v2/"
+private const val BEERS_DATABASE_NAME = "beersDb"
+private const val TIMEOUT = 25000L

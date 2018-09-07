@@ -1,7 +1,9 @@
 package com.epam.nyekilajos.roompagingpoc.ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.epam.nyekilajos.roompagingpoc.R
 import com.epam.nyekilajos.roompagingpoc.databinding.ActivityMainBinding
 import com.epam.nyekilajos.roompagingpoc.inject.DaggerActivityWithViewModel
@@ -24,5 +26,9 @@ class MainActivity : DaggerActivityWithViewModel() {
         binding.setLifecycleOwner(this)
         binding.adapter = BeersAdapter()
         binding.vm = beerListViewModel
+
+        beerListViewModel.error.observe(this, Observer {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
     }
 }

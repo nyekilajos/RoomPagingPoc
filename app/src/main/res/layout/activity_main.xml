@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -16,21 +18,28 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.MainActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:adapter="@{adapter}"
-            app:data="@{vm.getBeers()}"
-            app:itemDecoration="@{UiUtils.createDividerItemDecoration(parent.getContext())}"
-            app:layoutManager="@{UiUtils.createLinearLayoutManager(parent.getContext())}" />
+            android:layout_height="match_parent"
+            app:onRefresh="@{() -> vm.refreshBeers()}"
+            app:refreshing="@{vm.loading}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:adapter="@{adapter}"
+                app:data="@{vm.getBeers()}"
+                app:itemDecoration="@{UiUtils.createDividerItemDecoration(parent.getContext())}"
+                app:layoutManager="@{UiUtils.createLinearLayoutManager(parent.getContext())}" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
