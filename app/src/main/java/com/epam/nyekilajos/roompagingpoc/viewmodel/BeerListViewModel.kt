@@ -7,6 +7,8 @@ import androidx.lifecycle.toLiveData
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.repository.BeerRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -22,8 +24,10 @@ class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepo
 
     val error: MutableLiveData<String> = MutableLiveData()
 
+    private val disposables = CompositeDisposable()
+
     fun refreshBeers() {
-        beerRepository
+        disposables += beerRepository
                 .refreshBeers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -33,5 +37,10 @@ class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepo
                             loading.value = false
                         }
                 )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
     }
 }
