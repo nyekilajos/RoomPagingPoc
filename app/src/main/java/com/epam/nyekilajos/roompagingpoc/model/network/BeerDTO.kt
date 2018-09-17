@@ -11,59 +11,59 @@ data class BeerDTO(
         val name: String?,
 
         @SerializedName("tagline")
-        val tagline: String?,
+        val tagline: String? = null,
 
         @SerializedName("first_brewed")
-        val firstBrewed: String?,
+        val firstBrewed: String? = null,
 
         @SerializedName("description")
-        val description: String?,
+        val description: String? = null,
 
         @SerializedName("image_url")
-        val imageUrl: String?,
+        val imageUrl: String? = null,
 
         @SerializedName("abv")
-        val abv: Double?,
+        val abv: Double? = null,
 
         @SerializedName("ibu")
-        val ibu: Double?,
+        val ibu: Double? = null,
 
         @SerializedName("target_fg")
-        val targetFg: Double?,
+        val targetFg: Double? = null,
 
         @SerializedName("target_og")
-        val targetOg: Double?,
+        val targetOg: Double? = null,
 
         @SerializedName("ebc")
-        val ebc: Double?,
+        val ebc: Double? = null,
 
         @SerializedName("srm")
-        val srm: Double?,
+        val srm: Double? = null,
 
         @SerializedName("ph")
-        val ph: Double?,
+        val ph: Double? = null,
 
         @SerializedName("attenuation_level")
-        val attenuationLevel: Double?,
+        val attenuationLevel: Double? = null,
 
         @SerializedName("volume")
-        val volume: Amount?,
+        val volume: Amount? = null,
 
         @SerializedName("boil_volume")
-        val boilVolume: Amount?,
+        val boilVolume: Amount? = null,
 
         @SerializedName("method")
-        val method: Method?,
+        val method: Method? = null,
 
         @SerializedName("ingredients")
-        val ingredients: Ingredients?,
+        val ingredients: Ingredients? = null,
 
         @SerializedName("food_pairing")
-        val foodPairing: List<String?>?,
+        val foodPairing: List<String?>? = null,
 
         @SerializedName("brewers_tips")
-        val brewersTips: String?,
+        val brewersTips: String? = null,
 
         @SerializedName("contributed_by")
-        val contributedBy: String?
+        val contributedBy: String? = null
 )
