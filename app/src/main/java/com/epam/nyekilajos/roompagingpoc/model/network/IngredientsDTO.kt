@@ -2,10 +2,10 @@ package com.epam.nyekilajos.roompagingpoc.model.network
 
 import com.google.gson.annotations.SerializedName
 
-data class Ingredients(
+data class IngredientsDTO(
 
         @SerializedName("malt")
-        val malt: List<Malt?>?,
+        val malt: List<MaltDTO?>?,
 
         @SerializedName("hops")
         val hops: List<Hop?>?,

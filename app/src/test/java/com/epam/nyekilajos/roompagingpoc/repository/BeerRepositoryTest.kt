@@ -4,6 +4,7 @@ import com.epam.nyekilajos.roompagingpoc.RxImmediateSchedulerRule
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDao
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
+import com.epam.nyekilajos.roompagingpoc.model.database.Ingredients
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerDTO
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
 import com.nhaarman.mockitokotlin2.eq
@@ -58,5 +59,5 @@ class BeerRepositoryTest {
 
 private val IPA_DTO = BeerDTO(0, "IPA")
 private val STOUT_DTO = BeerDTO(1, "Stout")
-private val IPA = Beer(0, "IPA")
-private val STOUT = Beer(1, "Stout")
+private val IPA = Beer(0, "IPA", Ingredients(listOf(), listOf(), ""))
+private val STOUT = Beer(1, "Stout", Ingredients(listOf(), listOf(), ""))

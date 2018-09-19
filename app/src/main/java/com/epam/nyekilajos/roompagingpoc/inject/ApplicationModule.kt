@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.epam.nyekilajos.roompagingpoc.RoomPagingApplication
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
+import com.epam.nyekilajos.roompagingpoc.model.database.MIGRATION_1_2
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
 import com.epam.nyekilajos.roompagingpoc.ui.MainActivity
 import com.epam.nyekilajos.roompagingpoc.viewmodel.BeerListViewModel
@@ -50,6 +51,7 @@ abstract class ApplicationModule {
         fun providesBeersDatabase(context: Context): BeersDatabase {
             return Room
                     .databaseBuilder(context, BeersDatabase::class.java, BEERS_DATABASE_NAME)
+                    .addMigrations(MIGRATION_1_2)
                     .build()
         }
 

@@ -41,5 +41,5 @@ class BeersDaoTest {
     }
 }
 
-private val IPA = Beer(0, "IPA")
-private val STOUT = Beer(1, "Stout")
+private val IPA = Beer(0, "IPA", Ingredients(listOf(), listOf(), ""))
+private val STOUT = Beer(1, "Stout", Ingredients(listOf(), listOf(), ""))

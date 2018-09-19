@@ -56,7 +56,7 @@ data class BeerDTO(
         val method: Method? = null,
 
         @SerializedName("ingredients")
-        val ingredients: Ingredients? = null,
+        val ingredients: IngredientsDTO? = null,
 
         @SerializedName("food_pairing")
         val foodPairing: List<String?>? = null,

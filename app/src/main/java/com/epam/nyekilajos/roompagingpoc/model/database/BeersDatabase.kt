@@ -4,7 +4,7 @@ import androidx.room.*
 import io.reactivex.Flowable
 import io.reactivex.Single
 
-@Database(entities = [Beer::class], version = 1)
+@Database(entities = [Beer::class], version = 2)
 abstract class BeersDatabase : RoomDatabase() {
 
     abstract fun beersDao(): BeersDao
