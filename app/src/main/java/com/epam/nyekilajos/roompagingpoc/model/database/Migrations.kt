@@ -6,9 +6,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE beers ADD COLUMN `malt` TEXT NOT NULL DEFAULT \"[]\"")
-        database.execSQL("ALTER TABLE beers ADD COLUMN `hops` TEXT NOT NULL DEFAULT \"[]\"")
-        database.execSQL("ALTER TABLE beers ADD COLUMN `yeast` TEXT NOT NULL DEFAULT \"\"")
-        database.execSQL("CREATE  INDEX `index_beers_name` ON beers (`name`)")
+        database.run {
+            execSQL("ALTER TABLE beers ADD COLUMN `malt` TEXT NOT NULL DEFAULT \"[]\"")
+            execSQL("ALTER TABLE beers ADD COLUMN `hops` TEXT NOT NULL DEFAULT \"[]\"")
+            execSQL("ALTER TABLE beers ADD COLUMN `yeast` TEXT NOT NULL DEFAULT \"\"")
+            execSQL("CREATE  INDEX `index_beers_name` ON beers (`name`)")
+        }
     }
 }

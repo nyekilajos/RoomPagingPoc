@@ -32,7 +32,7 @@ class MigrationsTest {
         }
 
         val newVersion = helper.runMigrationsAndValidate(TEST_DB_NAME, 2, true, MIGRATION_1_2)
-        newVersion.query("SELECT * FROM beers", null).run {
+        newVersion.query("SELECT * FROM beers").run {
             moveToFirst()
             assertThat(getInt(0), equalTo(TEST_ID))
             assertThat(getString(1), equalTo(TEST_NAME))
