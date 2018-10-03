@@ -35,6 +35,20 @@ class BeersDaoTest {
         testSubscriber.assertValues(listOf(), listOf(IPA, STOUT))
     }
 
+    @Test
+    fun testJoin() {
+
+        sut.insertAll(listOf(IPA, STOUT))
+        sut.insertAllPeople(listOf(ISTVAN, LAJOS))
+
+        sut.getPeopleWithBeers()
+                .test()
+                .assertValue(listOf(
+                        PersonWithBeer(ISTVAN.name, STOUT.name),
+                        PersonWithBeer(LAJOS.name, IPA.name)
+                ))
+    }
+
     @After
     fun tearDown() {
         testDb.close()
@@ -43,3 +57,6 @@ class BeersDaoTest {
 
 private val IPA = Beer(0, "IPA", Ingredients(listOf(), listOf(), ""))
 private val STOUT = Beer(1, "Stout", Ingredients(listOf(), listOf(), ""))
+
+private val ISTVAN = Person(0, "Istvan", STOUT.id)
+private val LAJOS = Person(1, "Lajos", IPA.id)
