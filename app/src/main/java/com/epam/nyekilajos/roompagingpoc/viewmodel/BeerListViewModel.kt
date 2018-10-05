@@ -18,6 +18,10 @@ class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepo
     val beers: LiveData<List<Beer>> = beerRepository
             .getBeers()
             .doOnNext { loading.value = false }
+            .onErrorReturn {
+                error.value = it.localizedMessage
+                emptyList()
+            }
             .toLiveData()
 
     val loading: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
