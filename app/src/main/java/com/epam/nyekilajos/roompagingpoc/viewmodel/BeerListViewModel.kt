@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.toLiveData
+import androidx.paging.PagedList
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.repository.BeerRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepository) : ViewModel() {
 
-    val beers: LiveData<List<Beer>> = beerRepository
+    val beers: LiveData<PagedList<Beer>> = beerRepository
             .getBeers()
             .doOnNext { loading.value = false }
             .toLiveData()

@@ -1,6 +1,8 @@
 package com.epam.nyekilajos.roompagingpoc.util
 
 import androidx.databinding.BindingAdapter
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,6 +22,20 @@ fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, adapter: ListAdapt
         recyclerView.layoutManager = layoutManager
         if (data != null) {
             (recyclerView.adapter as ListAdapter<T, *>?)?.submitList(data)
+        }
+    }
+}
+
+@BindingAdapter(value = ["adapter", "layoutManager", "data"], requireAll = false)
+@Suppress("UNCHECKED_CAST")
+fun <T> setRecyclerViewProperties(recyclerView: RecyclerView, adapter: PagedListAdapter<T, *>?, layoutManager: RecyclerView.LayoutManager?, data: PagedList<T>?) {
+    if (adapter != null) {
+        recyclerView.adapter = adapter
+    }
+    if (layoutManager != null) {
+        recyclerView.layoutManager = layoutManager
+        if (data != null) {
+            (recyclerView.adapter as PagedListAdapter<T, *>?)?.submitList(data)
         }
     }
 }
