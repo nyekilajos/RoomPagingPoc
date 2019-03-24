@@ -17,6 +17,8 @@ class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepo
 
     val beers: LiveData<List<Beer>> = beerRepository
             .getBeers()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { loading.value = false }
             .onErrorReturn {
                 error.value = it.localizedMessage

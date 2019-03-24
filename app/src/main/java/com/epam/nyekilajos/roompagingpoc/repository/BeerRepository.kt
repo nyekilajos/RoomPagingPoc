@@ -4,12 +4,10 @@ import android.util.Log
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
 import com.epam.nyekilajos.roompagingpoc.model.database.Ingredients
+import com.epam.nyekilajos.roompagingpoc.model.network.BeerDTO
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
-import com.epam.nyekilajos.roompagingpoc.model.network.BeerServiceException
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -31,43 +29,43 @@ class BeerRepository @Inject constructor(private val beerService: BeerService, p
 
         return beersDatabase.beersDao()
                 .getBeers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doFinally { disposable.dispose() }
     }
 
     fun refreshBeers(): Completable {
-        return Single
-                .fromCallable {
-                    beerService.getBeers().execute().run {
-                        body()
-                                ?.filter { it.id != null && it.name != null }
-                                ?.map {
-                                    Beer(
-                                            it.id!!,
-                                            it.name!!,
-                                            Ingredients(
-                                                    it.ingredients?.malt
-                                                            ?.filter { malt -> malt?.name != null }
-                                                            ?.map { malt ->
-                                                                malt?.name!!
-                                                            } ?: listOf(),
-                                                    it.ingredients?.hops
-                                                            ?.filter { hop -> hop?.name != null }
-                                                            ?.map { hop ->
-                                                                hop?.name!!
-                                                            } ?: listOf(),
-                                                    it.ingredients?.yeast ?: "")
-                                    )
-                                }
-                                ?: throw BeerServiceException(errorBody()?.string()
-                                        ?: "Unknown error")
-                    }
-                }
-                .subscribeOn(Schedulers.io())
-                .doOnSuccess {
-                    beersDatabase.beersDao().updateAll(it)
-                }
+        return beerService.getBeers()
+                .doOnSuccess { updateDatabase(it) }
                 .ignoreElement()
+    }
+
+    private fun updateDatabase(it: List<BeerDTO>) {
+        beersDatabase
+                .beersDao()
+                .updateAll(
+                        it.mapNotNull { it.toBeer() }
+                )
+    }
+}
+
+fun BeerDTO.toBeer(): Beer? {
+    return if (id != null && name != null) {
+        Beer(
+                id,
+                name,
+                Ingredients(
+                        ingredients?.malt
+                                ?.filter { malt -> malt?.name != null }
+                                ?.map { malt ->
+                                    malt?.name!!
+                                } ?: listOf(),
+                        ingredients?.hops
+                                ?.filter { hop -> hop?.name != null }
+                                ?.map { hop ->
+                                    hop?.name!!
+                                } ?: listOf(),
+                        ingredients?.yeast ?: "")
+        )
+    } else {
+        null
     }
 }
