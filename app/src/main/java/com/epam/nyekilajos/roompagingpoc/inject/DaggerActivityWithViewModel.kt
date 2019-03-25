@@ -11,9 +11,9 @@ abstract class DaggerActivityWithViewModel : DaggerAppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-}
+    inline fun <reified T : ViewModel> daggerViewModel() = DaggerViewModelActivityDelegate(this, T::class)
 
-inline fun <reified T : ViewModel> daggerViewModel(activity: DaggerActivityWithViewModel) = DaggerViewModelActivityDelegate(activity, T::class)
+}
 
 class DaggerViewModelActivityDelegate<T : ViewModel>(
         private val activity: DaggerActivityWithViewModel,

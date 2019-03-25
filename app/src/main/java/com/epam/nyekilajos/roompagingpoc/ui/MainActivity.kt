@@ -7,12 +7,11 @@ import androidx.lifecycle.Observer
 import com.epam.nyekilajos.roompagingpoc.R
 import com.epam.nyekilajos.roompagingpoc.databinding.ActivityMainBinding
 import com.epam.nyekilajos.roompagingpoc.inject.DaggerActivityWithViewModel
-import com.epam.nyekilajos.roompagingpoc.inject.daggerViewModel
 import com.epam.nyekilajos.roompagingpoc.viewmodel.BeerListViewModel
 
 class MainActivity : DaggerActivityWithViewModel() {
 
-    private val beerListViewModel: BeerListViewModel by daggerViewModel(this)
+    private val beerListViewModel: BeerListViewModel by daggerViewModel()
 
     private lateinit var binding: ActivityMainBinding
 
