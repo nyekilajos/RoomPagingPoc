@@ -1,6 +1,9 @@
 package com.epam.nyekilajos.roompagingpoc.inject
 
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import kotlin.reflect.KClass
@@ -27,7 +30,7 @@ class DaggerViewModelActivityDelegate<T : ViewModel>(
     }
 
     override fun onCreate(owner: LifecycleOwner) {
-        viewModel = ViewModelProviders.of(activity, activity.viewModelFactory).get(kClass.java)
+        viewModel = ViewModelProvider(activity, activity.viewModelFactory).get(kClass.java)
     }
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {

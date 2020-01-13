@@ -8,7 +8,11 @@ import com.epam.nyekilajos.roompagingpoc.R
 import com.epam.nyekilajos.roompagingpoc.databinding.ActivityMainBinding
 import com.epam.nyekilajos.roompagingpoc.inject.DaggerActivityWithViewModel
 import com.epam.nyekilajos.roompagingpoc.viewmodel.BeerListViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MainActivity : DaggerActivityWithViewModel() {
 
     private val beerListViewModel: BeerListViewModel by daggerViewModel()
@@ -22,7 +26,7 @@ class MainActivity : DaggerActivityWithViewModel() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.adapter = BeersAdapter()
         binding.vm = beerListViewModel
 

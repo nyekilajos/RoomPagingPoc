@@ -1,52 +1,61 @@
 package com.epam.nyekilajos.roompagingpoc.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.toLiveData
+import androidx.lifecycle.*
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
+import com.epam.nyekilajos.roompagingpoc.model.network.BeerServiceException
 import com.epam.nyekilajos.roompagingpoc.repository.BeerRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class BeerListViewModel @Inject constructor(private val beerRepository: BeerRepository) : ViewModel() {
 
-    val beers: LiveData<List<Beer>> = beerRepository
-            .getBeers()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { loading.value = false }
-            .onErrorReturn {
-                error.value = it.localizedMessage
-                emptyList()
-            }
-            .toLiveData()
+    val beers: LiveData<List<Beer>> = liveData(Dispatchers.IO) {
+        beerRepository.getBeers()
+                .handleErrors(emptyList())
+                .collect {
+                    emit(it)
+                    loading.postValue(false)
+                }
+    }
 
     val loading: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
 
     val error: MutableLiveData<String> = MutableLiveData()
 
-    private val disposables = CompositeDisposable()
-
     fun refreshBeers() {
-        disposables += beerRepository
-                .refreshBeers()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                        onError = {
-                            error.value = it.localizedMessage
-                            loading.value = false
-                        }
-                )
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                beerRepository.refreshBeers()
+            } catch (e: IOException) {
+                error.postValue(e.localizedMessage)
+                loading.postValue(false)
+            } catch (e: BeerServiceException) {
+                error.postValue(e.localizedMessage)
+                loading.postValue(false)
+            }
+        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposables.clear()
+    private fun <T> Flow<T>.handleErrors(defaultValue: T): Flow<T> = flow {
+        try {
+            collect { emit(it) }
+        } catch (e: IOException) {
+            error.postValue(e.localizedMessage)
+            loading.postValue(false)
+            emit(defaultValue)
+        } catch (e: BeerServiceException) {
+            error.postValue(e.localizedMessage)
+            loading.postValue(false)
+            emit(defaultValue)
+        }
     }
 }

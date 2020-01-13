@@ -15,9 +15,10 @@ import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -43,7 +44,6 @@ abstract class ApplicationModule {
                             .writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS)
                             .build())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()
                     .create(BeerService::class.java)
         }
@@ -60,6 +60,8 @@ abstract class ApplicationModule {
     }
 }
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @Module
 abstract class ActivityModule {
 
@@ -67,6 +69,8 @@ abstract class ActivityModule {
     abstract fun contributeMainActivityInjector(): MainActivity
 }
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @Module
 abstract class ViewModelBuilder {
 
@@ -76,10 +80,12 @@ abstract class ViewModelBuilder {
     @Binds
     @IntoMap
     @ViewModelKey(BeerListViewModel::class)
-    abstract fun bindAddressListViewModel(viewModel: BeerListViewModel): ViewModel
+    abstract fun bindBeerListViewModel(viewModel: BeerListViewModel): ViewModel
 
 }
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
@@ -89,8 +95,8 @@ abstract class ViewModelBuilder {
 ])
 interface AppComponent : AndroidInjector<RoomPagingApplication> {
 
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<RoomPagingApplication>()
+    @Component.Factory
+    abstract class Factory : AndroidInjector.Factory<RoomPagingApplication>
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)

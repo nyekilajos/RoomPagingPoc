@@ -2,8 +2,12 @@ package com.epam.nyekilajos.roompagingpoc.model.database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -22,18 +26,20 @@ class BeersDaoTest {
 
     @Before
     fun setUp() {
-        testDb = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getTargetContext(), BeersDatabase::class.java).build()
+        testDb = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getInstrumentation().context, BeersDatabase::class.java).build()
         sut = testDb.beersDao()
     }
 
     @Test
-    fun test() {
-        val testSubscriber = sut.getBeers().test()
+    fun test() = runBlocking {
+        val beers = sut.getBeers()
+        assertThat(beers.first(), equalTo(listOf()))
 
         sut.insertAll(listOf(IPA, STOUT))
 
-        testSubscriber.assertValues(listOf(), listOf(IPA, STOUT))
+        assertThat(beers.first(), equalTo(listOf(IPA, STOUT)))
     }
+
 
     @After
     fun tearDown() {

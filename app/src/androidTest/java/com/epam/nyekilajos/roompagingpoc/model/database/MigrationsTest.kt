@@ -2,8 +2,8 @@ package com.epam.nyekilajos.roompagingpoc.model.database
 
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-import androidx.test.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.isEmptyString

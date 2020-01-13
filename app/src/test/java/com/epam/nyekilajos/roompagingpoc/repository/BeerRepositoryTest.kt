@@ -1,6 +1,5 @@
 package com.epam.nyekilajos.roompagingpoc.repository
 
-import com.epam.nyekilajos.roompagingpoc.RxImmediateSchedulerRule
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDao
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
@@ -10,21 +9,19 @@ import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import retrofit2.Call
-import retrofit2.Response
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 class BeerRepositoryTest {
-
-    @Rule
-    @JvmField
-    var rxImmediateSchedulerRule: RxImmediateSchedulerRule = RxImmediateSchedulerRule()
 
     private lateinit var sut: BeerRepository
 
@@ -37,21 +34,16 @@ class BeerRepositoryTest {
     @Mock
     private lateinit var beersDaoMock: BeersDao
 
-    @Mock
-    private lateinit var beersCallMock: Call<List<BeerDTO>>
-
     @Before
-    fun setUp() {
-        whenever(beerServiceMock.getBeers()).thenReturn(beersCallMock)
+    fun setUp() = runBlocking {
+        whenever(beerServiceMock.getBeers()).thenReturn(listOf(IPA_DTO, STOUT_DTO))
         whenever(beersDatabaseMock.beersDao()).thenReturn(beersDaoMock)
         sut = BeerRepository(beerServiceMock, beersDatabaseMock)
     }
 
     @Test
-    fun test() {
-        whenever(beersCallMock.execute()).thenReturn(Response.success(listOf(IPA_DTO, STOUT_DTO)))
-
-        sut.refreshBeers().test()
+    fun test() = runBlocking {
+        sut.refreshBeers()
 
         verify(beersDaoMock).updateAll(eq(listOf(IPA, STOUT)))
     }

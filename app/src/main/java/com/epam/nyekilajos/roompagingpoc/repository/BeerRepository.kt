@@ -1,44 +1,31 @@
 package com.epam.nyekilajos.roompagingpoc.repository
 
-import android.util.Log
 import com.epam.nyekilajos.roompagingpoc.model.database.Beer
 import com.epam.nyekilajos.roompagingpoc.model.database.BeersDatabase
 import com.epam.nyekilajos.roompagingpoc.model.database.Ingredients
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerDTO
 import com.epam.nyekilajos.roompagingpoc.model.network.BeerService
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class BeerRepository @Inject constructor(private val beerService: BeerService, private val beersDatabase: BeersDatabase) {
 
-    fun getBeers(): Flowable<List<Beer>> {
-        val disposable = beersDatabase.beersDao()
-                .getCount()
-                .subscribeOn(Schedulers.io())
-                .flatMapCompletable {
-                    if (it == 0) {
-                        refreshBeers()
-                    } else {
-                        Completable.complete()
-                    }
-                }
-                .subscribeBy(onError = { Log.e(BeerRepository::class.java.simpleName, it.localizedMessage) })
-
-        return beersDatabase.beersDao()
-                .getBeers()
-                .doFinally { disposable.dispose() }
+    suspend fun getBeers(): Flow<List<Beer>> {
+        if (beersDatabase.beersDao().getCount() == 0) {
+            refreshBeers()
+        }
+        return beersDatabase.beersDao().getBeers()
     }
 
-    fun refreshBeers(): Completable {
-        return beerService.getBeers()
-                .doOnSuccess { updateDatabase(it) }
-                .ignoreElement()
+    suspend fun refreshBeers() {
+        updateDatabase(beerService.getBeers())
     }
 
-    private fun updateDatabase(it: List<BeerDTO>) {
+    private suspend fun updateDatabase(it: List<BeerDTO>) {
         beersDatabase
                 .beersDao()
                 .updateAll(
